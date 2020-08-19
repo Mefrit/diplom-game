@@ -1,7 +1,6 @@
 define(["require", "exports", "../strategies/angryIfcan"], function (require, exports, angryIfcan_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.Ai = void 0;
     var Ai = (function () {
         function Ai(arrAllPersons) {
             var _this = this;
@@ -107,14 +106,17 @@ define(["require", "exports", "../strategies/angryIfcan"], function (require, ex
             var enemies = [].slice.call(document.getElementsByClassName("players"));
         };
         Ai.prototype.stepAi = function (res, unit) {
-            var obj;
-            obj = new angryIfcan_1.FightIfYouCan({
-                unit: unit,
-                result: res,
-                scene: this.scene,
-                unit_collection: this.unit_collection,
-            });
-            obj.attackPerson();
+            var _this = this;
+            setTimeout(function () {
+                var obj;
+                obj = new angryIfcan_1.FightIfYouCan({
+                    unit: unit,
+                    result: res,
+                    scene: _this.scene,
+                    unit_collection: _this.unit_collection,
+                });
+                obj.attackPerson();
+            }, 100);
         };
         return Ai;
     }());

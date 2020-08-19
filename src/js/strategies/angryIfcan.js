@@ -14,7 +14,6 @@ var __extends = (this && this.__extends) || (function () {
 define(["require", "exports", "./defaultMethods"], function (require, exports, defaultMethods_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.FightIfYouCan = void 0;
     var FightIfYouCan = (function (_super) {
         __extends(FightIfYouCan, _super);
         function FightIfYouCan(props) {
@@ -24,8 +23,7 @@ define(["require", "exports", "./defaultMethods"], function (require, exports, d
         }
         FightIfYouCan.prototype.attackPerson = function () {
             var nearEnemies = this.findNearestEnemies();
-            console.log("nearEnemies", nearEnemies);
-            this.moveAutoStepStupid(this.unit, { x: nearEnemies.person.x, y: nearEnemies.person.y });
+            this.moveAutoStepStupid(this.unit, { x: nearEnemies.person.x, y: nearEnemies.person.y }, nearEnemies);
         };
         FightIfYouCan.prototype.findNearestEnemies = function () {
             var _this = this;

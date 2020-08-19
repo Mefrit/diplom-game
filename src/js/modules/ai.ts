@@ -17,7 +17,7 @@ export class Ai {
         this.scene = {};
         //тут храняться занятые координаты( то бишь, что бы не на 1 клетку ходили )\
         this.cache_coord_bots = [];
-        this.syncUnit = function() {
+        this.syncUnit = function () {
             console.log("default");
         };
     }
@@ -133,15 +133,18 @@ export class Ai {
         return result;
     };
     stepAi(res, unit) {
-        let obj;
-        // if (true) {
-        obj = new FightIfYouCan({
-            unit: unit,
-            result: res,
-            scene: this.scene,
-            unit_collection: this.unit_collection,
-        });
-        obj.attackPerson();
+        setTimeout(() => {
+            let obj;
+            // if (true) {
+            obj = new FightIfYouCan({
+                unit: unit,
+                result: res,
+                scene: this.scene,
+                unit_collection: this.unit_collection,
+            });
+            obj.attackPerson();
+        }, 100)
+
         // } else {
         //     // рандомный ход
         //     this.changeLocation(person);

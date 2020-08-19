@@ -32,7 +32,8 @@ export class Person {
     getKind() {
         return this.person.evil;
     }
-    setCoord = (x: number, y: number) => {
+    setCoord(x: number, y: number) {
+
         this.x = x;
         this.y = y;
     }

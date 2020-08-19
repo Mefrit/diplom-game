@@ -1,14 +1,8 @@
 define(["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.Person = void 0;
     var Person = (function () {
         function Person(person) {
-            var _this = this;
-            this.setCoord = function (x, y) {
-                _this.x = x;
-                _this.y = y;
-            };
             this.person = person;
             this.x = person.x;
             this.y = person.y;
@@ -32,6 +26,10 @@ define(["require", "exports"], function (require, exports) {
         };
         Person.prototype.getKind = function () {
             return this.person.evil;
+        };
+        Person.prototype.setCoord = function (x, y) {
+            this.x = x;
+            this.y = y;
         };
         Person.prototype.getX = function () {
             return parseFloat(this.x);

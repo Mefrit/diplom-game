@@ -12,8 +12,8 @@ export class FightIfYouCan extends DefaultMethodsStrategey {
     attackPerson() {
         // console.log("\n ataka coordsEvil=> ", this.coordsEvil);
         let nearEnemies = this.findNearestEnemies();
-        console.log("nearEnemies", nearEnemies);
-        this.moveAutoStepStupid(this.unit, { x: nearEnemies.person.x, y: nearEnemies.person.y });
+
+        this.moveAutoStepStupid(this.unit, { x: nearEnemies.person.x, y: nearEnemies.person.y }, nearEnemies);
     }
     findNearestEnemies() {
         let min = 1000,
