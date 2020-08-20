@@ -59,9 +59,6 @@ define(["require", "exports", "../viewScene", "./person_collection"], function (
             this.contactPersons = function (event) {
                 var canvas = event.target, img = _this.loader.get(event.target.getAttribute("data-image"));
                 _this.view.contactPersonsView(canvas, img);
-                setTimeout(function () {
-                    _this.ai.step();
-                }, 200);
             };
             this.onChangePerson = function (event) {
                 var canvas = event.target;
@@ -79,6 +76,7 @@ define(["require", "exports", "../viewScene", "./person_collection"], function (
             this.view = new viewScene_1.ViewScene(this.collectionPersons);
             this.curentPerson = undefined;
             this.ai = ai;
+            this.ai.initView(this.view);
             this.ai.initPersons(this.collectionPersons, this.syncUnit);
             this.play();
         }
@@ -124,6 +122,7 @@ define(["require", "exports", "../viewScene", "./person_collection"], function (
                         cnvsElem.onclick = _this.contactPersons;
                     }
                     elem.initDomPerson(cnvsElem);
+                    elem.initImage(img);
                     document.getElementById("scene").appendChild(cnvsElem);
                 });
             });

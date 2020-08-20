@@ -22,6 +22,7 @@ export class Scene {
         this.curentPerson = undefined;
 
         this.ai = ai;
+        this.ai.initView(this.view);
         this.ai.initPersons(this.collectionPersons, this.syncUnit);
         this.play();
     }
@@ -115,7 +116,7 @@ export class Scene {
             posY += 120;
         }
     }
-    setAIperson() {}
+    setAIperson() { }
     play() {
         this.renderArena();
 
@@ -132,7 +133,8 @@ export class Scene {
                     cnvsElem.onclick = this.contactPersons;
                 }
                 elem.initDomPerson(cnvsElem);
-                
+                // когда будем делать графику будет сложнее, тк от этого аподхода придется избавиться
+                elem.initImage(img);
                 document.getElementById("scene").appendChild(cnvsElem);
             });
         });
@@ -141,9 +143,9 @@ export class Scene {
         let canvas = event.target,
             img = this.loader.get(event.target.getAttribute("data-image"));
         this.view.contactPersonsView(canvas, img);
-        setTimeout(() => {
-            this.ai.step();
-        }, 200);
+        // setTimeout(() => {
+        //     this.ai.step();
+        // }, 200);
     };
     onChangePerson = (event) => {
         let canvas = event.target;
@@ -159,5 +161,5 @@ export class Scene {
 
         this.view.showAvailabeMovies(this.canvas);
     };
-    renderAiPerson() {}
+    renderAiPerson() { }
 }

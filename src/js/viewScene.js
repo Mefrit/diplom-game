@@ -26,7 +26,6 @@ define(["require", "exports"], function (require, exports) {
                 return cnvsElem;
             };
             this.renderElement = function (element) {
-                console.log("renderElement", element, element.getX(), element.getY());
                 element.domPerson.style.left = element.getX() * 120 + "px";
                 element.domPerson.style.top = element.getY() * 120 + "px";
             };
@@ -52,13 +51,14 @@ define(["require", "exports"], function (require, exports) {
                 ctx.lineTo(obj.getHealth() * 3, 20);
                 ctx.stroke();
             };
-            this.contactPersonsView = function (canvas, img) {
+            this.contactPersonsView = function (canvas, img, damage) {
+                if (damage === void 0) { damage = 5; }
                 var ctx = canvas.getContext("2d"), id;
                 ctx.beginPath();
                 ctx.clearRect(0, 0, 1000, 1000);
                 _this.drawImage(ctx, img);
                 id = { id: canvas.getAttribute("data-id") };
-                _this.drawHealth(ctx, { person: id }, 5);
+                _this.drawHealth(ctx, { person: id }, damage);
             };
             this.arrObjPersons = arrObjPlayers;
         }

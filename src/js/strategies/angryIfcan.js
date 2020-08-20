@@ -22,25 +22,18 @@ define(["require", "exports", "./defaultMethods"], function (require, exports, d
             return _this;
         }
         FightIfYouCan.prototype.attackPerson = function () {
-            var nearEnemies = this.findNearestEnemies();
-            this.moveAutoStepStupid(this.unit, { x: nearEnemies.person.x, y: nearEnemies.person.y }, nearEnemies);
+            var nearEnemie = this.findNearestEnemies(this.unit), coord, res, attakedEnemie;
+            coord = { x: nearEnemie.person.x, y: nearEnemie.person.y };
+            res = this.moveAutoStepStupid(this.unit, nearEnemie);
+            if (res.findEnime == true) {
+                attakedEnemie = this.findEnemieForAtake(res.enemie);
+                this.view.contactPersonsView(res.enemie.domPerson, res.enemie.image, this.unit.person.damage);
+                console.log(res.enemie, this.view);
+            }
+            console.log("attackPerson", res);
         };
-        FightIfYouCan.prototype.findNearestEnemies = function () {
-            var _this = this;
-            var min = 1000, nearEnemies = undefined, tmp_x, tmp_y, tmp_min = 1000;
-            this.unit_collection.getCollection().forEach(function (element) {
-                if (!element.person.evil) {
-                    console.log();
-                    tmp_x = _this.unit.person.x - element.person.x;
-                    tmp_y = _this.unit.person.y - element.person.y;
-                    tmp_min = Math.sqrt(tmp_x * tmp_x + tmp_y * tmp_y);
-                    if (min > tmp_min) {
-                        min = tmp_min;
-                        nearEnemies = element;
-                    }
-                }
-            });
-            return nearEnemies;
+        FightIfYouCan.prototype.findEnemieForAtake = function (enemie) {
+            return enemie;
         };
         FightIfYouCan.prototype.findEnemies = function () {
             var cacheEnimies = [];

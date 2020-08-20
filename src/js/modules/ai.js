@@ -1,4 +1,4 @@
-define(["require", "exports", "../strategies/angryIfcan"], function (require, exports, angryIfcan_1) {
+define(["require", "exports", "../strategies/atackTheArcher"], function (require, exports, atackTheArcher_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var Ai = (function () {
@@ -30,7 +30,7 @@ define(["require", "exports", "../strategies/angryIfcan"], function (require, ex
             this.step = function () {
                 var posDifX, posDifY, res;
                 _this.unit_collection.getCollection().forEach(function (element) {
-                    if (element.person.evil) {
+                    if (element.person.evil && element.person.health > 12) {
                         _this.stepAi(res, element);
                     }
                 });
@@ -42,6 +42,9 @@ define(["require", "exports", "../strategies/angryIfcan"], function (require, ex
                 console.log("default");
             };
         }
+        Ai.prototype.initView = function (view) {
+            this.view = view;
+        };
         Ai.prototype.getCoord = function (coord) {
             return parseInt(coord.split("px")[0]);
         };
@@ -109,13 +112,14 @@ define(["require", "exports", "../strategies/angryIfcan"], function (require, ex
             var _this = this;
             setTimeout(function () {
                 var obj;
-                obj = new angryIfcan_1.FightIfYouCan({
+                obj = new atackTheArcher_1.AtackTheArcher({
                     unit: unit,
                     result: res,
                     scene: _this.scene,
                     unit_collection: _this.unit_collection,
+                    view: _this.view
                 });
-                obj.attackPerson();
+                obj.start();
             }, 100);
         };
         return Ai;

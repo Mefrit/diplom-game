@@ -1,11 +1,14 @@
 import { MoveRandomPerson } from "../strategies/move";
 import { FightIfYouCan } from "../strategies/angryIfcan";
+import { AtackTheArcher } from "../strategies/atackTheArcher";
+
 export class Ai {
     arrOwnPerson: any;
     arrAllPersons: any;
     unit_collection: any;
     syncUnit: any;
     cache_coord_bots: any;
+    view: any;
     // обьект для рендера элементов
     scene: any;
     constructor(arrAllPersons) {
@@ -25,6 +28,9 @@ export class Ai {
         this.unit_collection = unit_collection;
         this.syncUnit = syncUnit;
     };
+    initView(view) {
+        this.view = view;
+    }
     initScene = (scene) => {
         console.log("initScene", scene);
         this.scene = scene;
@@ -136,13 +142,23 @@ export class Ai {
         setTimeout(() => {
             let obj;
             // if (true) {
-            obj = new FightIfYouCan({
+            // obj = new FightIfYouCan({
+            //     unit: unit,
+            //     result: res,
+            //     scene: this.scene,
+            //     unit_collection: this.unit_collection,
+            //     view: this.view
+            // });
+            // obj.attackPerson();
+
+            obj = new AtackTheArcher({
                 unit: unit,
                 result: res,
                 scene: this.scene,
                 unit_collection: this.unit_collection,
+                view: this.view
             });
-            obj.attackPerson();
+            obj.start();
         }, 100)
 
         // } else {
@@ -154,7 +170,8 @@ export class Ai {
         let posDifX, posDifY, res;
 
         this.unit_collection.getCollection().forEach((element) => {
-            if (element.person.evil) {
+
+            if (element.person.evil && element.person.health > 12) {
                 this.stepAi(res, element);
             }
             // this.changeLocation(element, res.x, res.y);

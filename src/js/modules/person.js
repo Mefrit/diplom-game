@@ -8,9 +8,14 @@ define(["require", "exports"], function (require, exports) {
             this.y = person.y;
             this.moveAction = false;
             this.domPerson = undefined;
+            this.coordPrevPoint = {};
+            this.image = undefined;
         }
         Person.prototype.initDomPerson = function (domPerson) {
             this.domPerson = domPerson;
+        };
+        Person.prototype.initImage = function (image) {
+            this.image = image;
         };
         Person.prototype.setHealth = function (value) {
             this.person.health = parseInt(value);
@@ -21,6 +26,9 @@ define(["require", "exports"], function (require, exports) {
         Person.prototype.getUrl = function () {
             return this.person.url;
         };
+        Person.prototype.isDied = function () {
+            return this.person.health <= 10;
+        };
         Person.prototype.getId = function () {
             return this.person.id;
         };
@@ -28,8 +36,11 @@ define(["require", "exports"], function (require, exports) {
             return this.person.evil;
         };
         Person.prototype.setCoord = function (x, y) {
+            this.person.x = x;
+            this.person.y = y;
             this.x = x;
             this.y = y;
+            this.coordPrevPoint = { x: x, y: y };
         };
         Person.prototype.getX = function () {
             return parseFloat(this.x);

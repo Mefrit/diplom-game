@@ -1,8 +1,12 @@
+import { AllHTMLAttributes } from "react";
+
 export class DefaultMethodsStrategey {
     scene: any;
+    view: any;
     unit_collection: any;
     constructor(props) {
         this.scene = props.scene;
+        this.view = props.view;
         this.unit_collection = props.unit_collection;
     }
     // моментальный перевод
@@ -10,18 +14,37 @@ export class DefaultMethodsStrategey {
         // тут нужна проаверка на лучшее место для удара
 
         person.setCoord(coord.x, coord.y);
-        person.person.x = coord.x;
-        person.person.y = coord.y;
 
         this.unit_collection.updateElement(person);
-        console.log(this.unit_collection, person.person.x, person.person.y);
+
         this.scene.renderElement(person);
 
         //
     }
+    findNearestEnemies(unit) {
+        let min = 1000,
+            nearEnemies = undefined,
+            tmp_x,
+            tmp_y,
+            tmp_min = 1000;
+        this.unit_collection.getCollection().forEach((element) => {
+            if (!element.person.evil && !element.isDied()) {
+                console.log();
 
+                tmp_x = unit.person.x - element.person.x;
+                tmp_y = unit.person.y - element.person.y;
+
+                tmp_min = Math.sqrt(tmp_x * tmp_x + tmp_y * tmp_y);
+                if (min > tmp_min) {
+                    min = tmp_min;
+                    nearEnemies = element;
+                }
+            }
+        });
+
+        return nearEnemies;
+    }
     //указывает на лучшую  точку
-
     deleteExcessCoord(cahceCoord = []) {
 
         return cahceCoord.filter((elem) => {
@@ -42,7 +65,7 @@ export class DefaultMethodsStrategey {
                 res.push({ x: coord.x + i, y: coord.y + j });
             }
         }
-        console.log("getNeighbors", this.deleteExcessCoord(res), coord);
+
         return this.deleteExcessCoord(res);
     }
     //проверка на то что эта точка новая
@@ -56,18 +79,16 @@ export class DefaultMethodsStrategey {
         return res;
     }
     heuristic(a, b) {
-        console.log(Math.abs(a.x - b.x) + Math.abs(a.y - b.y), a, b);
+
         return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
     }
     // автоматический путь к задангным координатам без учета возможных опасностей
-    moveAutoStepStupid = (unit, coord, nearEnemie) => {
+    moveAutoStepStupid = (unit, enemie) => {
         // нужн окак то придумать, что бы можно было обходить препятствия и строить оптимальный путь
-        let x = unit.person.x,
-            y = unit.person.y,
-            resEmptyArea = true;
+
         // хранит путь до точки
 
-        let pointsNear;
+        let pointsNear, res = { findEnime: false, enemie: enemie };
 
         let current = { id: 0, x: unit.person.x, y: unit.person.y }, came_from = {},
             frontier: any = [],//граница
@@ -76,12 +97,13 @@ export class DefaultMethodsStrategey {
 
         came_from[0] = NaN;
         cost_so_far[0] = 0;
-        if (current.x == coord.x && current.y == coord.y) {
-            alert("YES you see it");
+        if (Math.abs(current.x - enemie.x) < 2 && Math.abs(current.y - enemie.y) < 2) {
+            res.findEnime = true;
+            return res;
         } else {
-            console.log("unit", unit, unit.person.x, unit.person.y);
+
             pointsNear = this.getNeighbors({ x: unit.person.x, y: unit.person.y });
-            console.log("pointsNear", pointsNear);
+
             pointsNear.forEach((next, index, arr) => {
                 next.id = unit.person.x + unit.person.y + index;
 
@@ -89,8 +111,9 @@ export class DefaultMethodsStrategey {
 
                 if (cost_so_far.indexOf(next.id) == -1 || new_cost < cost_so_far[next.id]) {
                     cost_so_far[next.id] = new_cost;
-                    priority = this.heuristic({ x: nearEnemie.person.x, y: nearEnemie.person.y }, next);
-                    // console.log(this.heuristic({ x: nearEnemie.person.x, y: nearEnemie.person.y }, next));
+                    // priority = this.heuristic({ x: nearEnemie.person.x, y: nearEnemie.person.y }, next);
+                    priority = this.heuristic({ x: enemie.x, y: enemie.y }, next);
+
                     frontier.push({ next: next, priority: priority });
                     came_from[next.id] = current;
                 }
@@ -101,17 +124,22 @@ export class DefaultMethodsStrategey {
 
 
         }
-        console.log("frontier", frontier);
+
         bestPoint = frontier[0];
         frontier.forEach(element => {
+
             if (element.priority < bestPoint.priority) {
-                bestPoint = element;
+                // что бы искал пути, конечно это не панацея в более сложных ситуация фигурка будет тупить
+                if (unit.coordPrevPoint.x != element.next.x && unit.coordPrevPoint.y != element.next.y) {
+                    bestPoint = element;
+                }
+
             }
         });
-        console.log("bestPoint=> ", bestPoint);
+
         this.moveTo(unit, bestPoint.next)
 
-
+        return res;
         // while (true) {
         //     // this.unit_collection.getCollection().forEach((elem) => {
         //     //     if (elem.person.x != x) {
@@ -122,5 +150,11 @@ export class DefaultMethodsStrategey {
         //     }
         //     console.log("while");
         // }
+    }
+    checkFreePoints(points) {
+        let res = true;
+        this.unit_collection.getCollection().forEach((element) => {
+        });
+        return res;
     }
 }

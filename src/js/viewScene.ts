@@ -28,7 +28,7 @@ export class ViewScene {
         return cnvsElem;
     };
     renderElement = (element) => {
-        console.log("renderElement", element, element.getX(), element.getY());
+
         element.domPerson.style.left = element.getX() * 120 + "px";
         element.domPerson.style.top = element.getY() * 120 + "px";
         // element.style.left = pos_dif_x + "px";
@@ -55,14 +55,14 @@ export class ViewScene {
         ctx.lineTo(obj.getHealth() * 3, 20);
         ctx.stroke();
     };
-    contactPersonsView = (canvas, img) => {
+    contactPersonsView = (canvas, img, damage = 5) => {
         let ctx = canvas.getContext("2d"),
             id;
         ctx.beginPath();
         ctx.clearRect(0, 0, 1000, 1000);
         this.drawImage(ctx, img);
         id = { id: canvas.getAttribute("data-id") };
-        this.drawHealth(ctx, { person: id }, 5);
+        this.drawHealth(ctx, { person: id }, damage);
     };
     drawImage(ctx, img) {
         let width, height, coef;
