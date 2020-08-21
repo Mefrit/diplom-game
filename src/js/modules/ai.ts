@@ -141,24 +141,25 @@ export class Ai {
     stepAi(res, unit) {
         setTimeout(() => {
             let obj;
-            // if (true) {
-            // obj = new FightIfYouCan({
-            //     unit: unit,
-            //     result: res,
-            //     scene: this.scene,
-            //     unit_collection: this.unit_collection,
-            //     view: this.view
-            // });
-            // obj.attackPerson();
-
-            obj = new AtackTheArcher({
-                unit: unit,
-                result: res,
-                scene: this.scene,
-                unit_collection: this.unit_collection,
-                view: this.view
-            });
-            obj.start();
+            if (unit.person.class == "fighter") {
+                obj = new FightIfYouCan({
+                    unit: unit,
+                    result: res,
+                    scene: this.scene,
+                    unit_collection: this.unit_collection,
+                    view: this.view
+                });
+                obj.attackPerson();
+            } else {
+                obj = new AtackTheArcher({
+                    unit: unit,
+                    result: res,
+                    scene: this.scene,
+                    unit_collection: this.unit_collection,
+                    view: this.view
+                });
+                obj.start();
+            }
         }, 100)
 
         // } else {

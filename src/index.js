@@ -7,17 +7,17 @@ define(["require", "exports", "react", "react-dom", "./js/loader", "./js/modules
     var arrPersons = [
         {
             url: "./src/images/vinny.png",
-            x: 7,
-            y: 1,
+            x: 6,
+            y: 2,
             evil: true,
             class: "archer",
-            damage: 2,
+            damage: 9,
             health: 50,
             id: 5,
         },
         {
             url: "./src/images/hola.png",
-            x: 2,
+            x: 0,
             y: 2,
             evil: false,
             class: "archer",

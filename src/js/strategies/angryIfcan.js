@@ -24,13 +24,13 @@ define(["require", "exports", "./defaultMethods"], function (require, exports, d
         FightIfYouCan.prototype.attackPerson = function () {
             var nearEnemie = this.findNearestEnemies(this.unit), coord, res, attakedEnemie;
             coord = { x: nearEnemie.person.x, y: nearEnemie.person.y };
-            res = this.moveAutoStepStupid(this.unit, nearEnemie);
+            res = this.moveAutoStepStupid(this.unit, nearEnemie, "fighter");
+            console.log(res);
             if (res.findEnime == true) {
                 attakedEnemie = this.findEnemieForAtake(res.enemie);
                 this.view.contactPersonsView(res.enemie.domPerson, res.enemie.image, this.unit.person.damage);
                 console.log(res.enemie, this.view);
             }
-            console.log("attackPerson", res);
         };
         FightIfYouCan.prototype.findEnemieForAtake = function (enemie) {
             return enemie;

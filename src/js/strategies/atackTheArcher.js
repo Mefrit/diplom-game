@@ -21,33 +21,108 @@ define(["require", "exports", "./defaultMethods"], function (require, exports, d
             _this.unit = props.unit;
             return _this;
         }
-        AtackTheArcher.prototype.checkFreeWay2AtackX = function (enemy) {
-            var arrayPoit = [], sgn = enemy.x < this.unit.x ? -1 : 1;
-            for (var i = 0; i < Math.abs(enemy.x - this.unit.x); i++) {
+        AtackTheArcher.prototype.checkFreeWay2Atack = function (enemie, direction) {
+            var arrayPoit = [], sgn = enemie[direction] < this.unit[direction] ? -1 : 1, tmp, res = { free: false, arrayPoit: [], direction: direction }, coefI;
+            if (Math.abs(enemie[direction] - this.unit[direction]) > 4) {
+                coefI = Math.abs(enemie[direction] - this.unit[direction]) - 1;
+            }
+            else {
+                coefI = Math.abs(enemie[direction] + 4);
+            }
+            for (var i = 1; i <= coefI; i++) {
                 if (arrayPoit.length < 5) {
-                    arrayPoit.push({ x: enemy.x - sgn * i, y: enemy.y });
+                    tmp = direction == "x" ? { x: enemie.x - sgn * i, y: enemie.y } : { x: enemie.x, y: enemie.y - sgn * i };
+                    if (tmp.x >= 0 && tmp.y >= 0) {
+                        arrayPoit.push(tmp);
+                    }
                 }
                 else {
                     break;
                 }
             }
-            this.checkFreePoints(arrayPoit);
-            console.log(arrayPoit);
-            return true;
+            tmp = this.checkFreePoints(arrayPoit, "archer");
+            ;
+            res.free = tmp.free;
+            if (tmp.deleteLastPoint) {
+                arrayPoit.splice(arrayPoit.length - 1, 1);
+            }
+            if (tmp.runAway) {
+                console.log("runAway!!!!!!!!");
+            }
+            res.arrayPoit = arrayPoit;
+            console.log("checkFreeWay2Atack", res, coefI, direction);
+            return res;
         };
-        AtackTheArcher.prototype.findPointAtackArcher = function (enemy) {
-            var maxX = Math.abs(enemy.person.x - this.unit.person.x), maxY = Math.abs(enemy.person.y - this.unit.person.y);
-            if (maxY > maxX) {
-                console.log(maxX, maxY);
+        AtackTheArcher.prototype.atakeArcher = function (enemie) {
+            var str_cahce = "Love Triss Merigold".split("");
+            str_cahce.forEach(function (elem) {
+                console.log(elem.charCodeAt(0).toString(16));
+            });
+            this.view.contactPersonsView(enemie.domPerson, enemie.image, this.unit.person.damage);
+        };
+        AtackTheArcher.prototype.tryAtakeArcher = function (resCheck, enemie) {
+            var pointPosition, xLineCondition, yLineCondition, res = { pointPosition: [], result: true };
+            if (resCheck.arrayPoit.length > 0) {
+                pointPosition = resCheck.arrayPoit[resCheck.arrayPoit.length - 1];
+                res.pointPosition = pointPosition;
+                xLineCondition = enemie.x == this.unit.x && pointPosition.x == this.unit.x;
+                yLineCondition = enemie.y == this.unit.y && pointPosition.y == this.unit.y;
             }
             else {
-                if (this.checkFreeWay2AtackX(enemy)) {
+                xLineCondition = false;
+                yLineCondition = false;
+            }
+            if (yLineCondition || xLineCondition || resCheck.arrayPoit.length == 0) {
+                if (Math.abs(this.unit.x - enemie.x) < 5) {
+                    if (false) { }
+                    else {
+                        console.log("HERE", resCheck);
+                        this.atakeArcher(enemie);
+                    }
                 }
+                else {
+                    console.log("moveAutoStepStupid", pointPosition);
+                    this.moveAutoStepStupid(this.unit, pointPosition, "archer");
+                }
+            }
+            else {
+                res.result = false;
+            }
+            console.log("tryAtakeArcherRes", res);
+            return res;
+        };
+        AtackTheArcher.prototype.findPointAtackArcher = function (enemie) {
+            var maxX = Math.abs(enemie.person.x - this.unit.person.x), maxY = Math.abs(enemie.person.y - this.unit.person.y), resCheck, pointPosition, res;
+            if (maxY > maxX) {
+                resCheck = this.checkFreeWay2Atack(enemie, "y");
+                if (!resCheck.free) {
+                    console.log("here");
+                    resCheck = this.checkFreeWay2Atack(enemie, "x");
+                }
+            }
+            else {
+                resCheck = this.checkFreeWay2Atack(enemie, "x");
+                if (!resCheck.free) {
+                    resCheck = this.checkFreeWay2Atack(enemie, "y");
+                }
+            }
+            if (resCheck.free) {
+                res = this.tryAtakeArcher(resCheck, enemie);
+                console.log('tryAtakeArcher', res);
+                if (!res.result) {
+                    this.moveAutoStepStupid(this.unit, res.pointPosition, "archer");
+                    this.tryAtakeArcher(resCheck, enemie);
+                }
+            }
+            else {
+                console.log("Archer is LAZY ");
             }
         };
         AtackTheArcher.prototype.start = function () {
-            var enemy = this.findNearestEnemies(this.unit);
-            this.findPointAtackArcher(enemy);
+            if (this.unit.person.class == "archer") {
+                var enemie = this.findNearestEnemies(this.unit);
+                this.findPointAtackArcher(enemie);
+            }
         };
         return AtackTheArcher;
     }(defaultMethods_1.DefaultMethodsStrategey));

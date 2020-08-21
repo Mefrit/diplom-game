@@ -1,4 +1,4 @@
-define(["require", "exports", "../strategies/atackTheArcher"], function (require, exports, atackTheArcher_1) {
+define(["require", "exports", "../strategies/angryIfcan", "../strategies/atackTheArcher"], function (require, exports, angryIfcan_1, atackTheArcher_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var Ai = (function () {
@@ -112,14 +112,26 @@ define(["require", "exports", "../strategies/atackTheArcher"], function (require
             var _this = this;
             setTimeout(function () {
                 var obj;
-                obj = new atackTheArcher_1.AtackTheArcher({
-                    unit: unit,
-                    result: res,
-                    scene: _this.scene,
-                    unit_collection: _this.unit_collection,
-                    view: _this.view
-                });
-                obj.start();
+                if (unit.person.class == "fighter") {
+                    obj = new angryIfcan_1.FightIfYouCan({
+                        unit: unit,
+                        result: res,
+                        scene: _this.scene,
+                        unit_collection: _this.unit_collection,
+                        view: _this.view
+                    });
+                    obj.attackPerson();
+                }
+                else {
+                    obj = new atackTheArcher_1.AtackTheArcher({
+                        unit: unit,
+                        result: res,
+                        scene: _this.scene,
+                        unit_collection: _this.unit_collection,
+                        view: _this.view
+                    });
+                    obj.start();
+                }
             }, 100);
         };
         return Ai;

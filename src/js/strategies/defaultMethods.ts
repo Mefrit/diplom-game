@@ -83,22 +83,23 @@ export class DefaultMethodsStrategey {
         return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
     }
     // автоматический путь к задангным координатам без учета возможных опасностей
-    moveAutoStepStupid = (unit, enemie) => {
+    moveAutoStepStupid = (unit, enemie, type = "fighter") => {
         // нужн окак то придумать, что бы можно было обходить препятствия и строить оптимальный путь
 
         // хранит путь до точки
 
-        let pointsNear, res = { findEnime: false, enemie: enemie };
+        let pointsNear, res = { findEnime: false, enemie: enemie, type: type };
 
         let current = { id: 0, x: unit.person.x, y: unit.person.y }, came_from = {},
             frontier: any = [],//граница
             cost_so_far = [],
-            new_cost, priority, bestPoint;
+            new_cost, priority, bestPoint, coefProximity = type == "archer" ? 1 : 2;
 
         came_from[0] = NaN;
         cost_so_far[0] = 0;
-        if (Math.abs(current.x - enemie.x) < 2 && Math.abs(current.y - enemie.y) < 2) {
+        if (this.checkEnemieNear(current, enemie, coefProximity)) {
             res.findEnime = true;
+            console.log("checkEnemieNear=>>>>>>>>>>>>in ", type);
             return res;
         } else {
 
@@ -121,8 +122,6 @@ export class DefaultMethodsStrategey {
                 // if (this.checkCameFromEmpty(cameFrom, elem)) {
                 // }
             });
-
-
         }
 
         bestPoint = frontier[0];
@@ -130,31 +129,54 @@ export class DefaultMethodsStrategey {
 
             if (element.priority < bestPoint.priority) {
                 // что бы искал пути, конечно это не панацея в более сложных ситуация фигурка будет тупить
-                if (unit.coordPrevPoint.x != element.next.x && unit.coordPrevPoint.y != element.next.y) {
+                if (type == "archer") {
                     bestPoint = element;
+                } else {
+                    if (unit.coordPrevPoint.x != element.next.x && unit.coordPrevPoint.y != element.next.y) {
+                        bestPoint = element;
+                    }
                 }
+
 
             }
         });
 
-        this.moveTo(unit, bestPoint.next)
+        this.moveTo(unit, bestPoint.next);
+        current = { id: 0, x: unit.person.x, y: unit.person.y }
+        console.log("moveAutoStepStupid=>>>>>>>>>>>>in ", this.checkEnemieNear(current, enemie, coefProximity));
+
+        res.findEnime = this.checkEnemieNear(current, enemie, coefProximity);
 
         return res;
-        // while (true) {
-        //     // this.unit_collection.getCollection().forEach((elem) => {
-        //     //     if (elem.person.x != x) {
-        //     //     }
-        //     // });
-        //     if (pointsNear.x.indexOf(unit.person.x) != -1 || pointsNear.y.indexOf(unit.person.y) != -1) {
-        //         break;
-        //     }
-        //     console.log("while");
-        // }
+
     }
-    checkFreePoints(points) {
-        let res = true;
-        this.unit_collection.getCollection().forEach((element) => {
+    checkEnemieNear(current, enemie, coefProximity) {
+
+        return Math.abs(current.x - enemie.x) < coefProximity && Math.abs(current.y - enemie.y) < coefProximity
+    }
+    checkFreePoints(points, type = "fighter") {
+        let res = { free: true, deleteLastPoint: false, runAway: false };
+        this.unit_collection.getCollection().forEach((unit) => {
+            for (let i = 0; i < points.length; i++) {
+
+                if (unit.x == points[i].x && points[i].y == unit.y) {
+
+                    if (!(type == "archer" && i == points.length - 1)) {
+                        if (unit.person.evil) {
+                            res.runAway = true;
+                        }
+                        res.free = false;
+
+                    } else {
+                        res.deleteLastPoint = true;
+                    }
+
+                }
+            }
+
+
         });
+        console.log("checkFreePoints", res);
         return res;
     }
 }

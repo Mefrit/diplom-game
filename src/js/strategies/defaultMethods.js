@@ -13,13 +13,15 @@ define(["require", "exports"], function (require, exports) {
                 }
                 return _this.deleteExcessCoord(res);
             };
-            this.moveAutoStepStupid = function (unit, enemie) {
-                var pointsNear, res = { findEnime: false, enemie: enemie };
-                var current = { id: 0, x: unit.person.x, y: unit.person.y }, came_from = {}, frontier = [], cost_so_far = [], new_cost, priority, bestPoint;
+            this.moveAutoStepStupid = function (unit, enemie, type) {
+                if (type === void 0) { type = "fighter"; }
+                var pointsNear, res = { findEnime: false, enemie: enemie, type: type };
+                var current = { id: 0, x: unit.person.x, y: unit.person.y }, came_from = {}, frontier = [], cost_so_far = [], new_cost, priority, bestPoint, coefProximity = type == "archer" ? 1 : 2;
                 came_from[0] = NaN;
                 cost_so_far[0] = 0;
-                if (Math.abs(current.x - enemie.x) < 2 && Math.abs(current.y - enemie.y) < 2) {
+                if (_this.checkEnemieNear(current, enemie, coefProximity)) {
                     res.findEnime = true;
+                    console.log("checkEnemieNear=>>>>>>>>>>>>in ", type);
                     return res;
                 }
                 else {
@@ -38,12 +40,20 @@ define(["require", "exports"], function (require, exports) {
                 bestPoint = frontier[0];
                 frontier.forEach(function (element) {
                     if (element.priority < bestPoint.priority) {
-                        if (unit.coordPrevPoint.x != element.next.x && unit.coordPrevPoint.y != element.next.y) {
+                        if (type == "archer") {
                             bestPoint = element;
+                        }
+                        else {
+                            if (unit.coordPrevPoint.x != element.next.x && unit.coordPrevPoint.y != element.next.y) {
+                                bestPoint = element;
+                            }
                         }
                     }
                 });
                 _this.moveTo(unit, bestPoint.next);
+                current = { id: 0, x: unit.person.x, y: unit.person.y };
+                console.log("moveAutoStepStupid=>>>>>>>>>>>>in ", _this.checkEnemieNear(current, enemie, coefProximity));
+                res.findEnime = _this.checkEnemieNear(current, enemie, coefProximity);
                 return res;
             };
             this.scene = props.scene;
@@ -96,10 +106,28 @@ define(["require", "exports"], function (require, exports) {
         DefaultMethodsStrategey.prototype.heuristic = function (a, b) {
             return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
         };
-        DefaultMethodsStrategey.prototype.checkFreePoints = function (points) {
-            var res = true;
-            this.unit_collection.getCollection().forEach(function (element) {
+        DefaultMethodsStrategey.prototype.checkEnemieNear = function (current, enemie, coefProximity) {
+            return Math.abs(current.x - enemie.x) < coefProximity && Math.abs(current.y - enemie.y) < coefProximity;
+        };
+        DefaultMethodsStrategey.prototype.checkFreePoints = function (points, type) {
+            if (type === void 0) { type = "fighter"; }
+            var res = { free: true, deleteLastPoint: false, runAway: false };
+            this.unit_collection.getCollection().forEach(function (unit) {
+                for (var i = 0; i < points.length; i++) {
+                    if (unit.x == points[i].x && points[i].y == unit.y) {
+                        if (!(type == "archer" && i == points.length - 1)) {
+                            if (unit.person.evil) {
+                                res.runAway = true;
+                            }
+                            res.free = false;
+                        }
+                        else {
+                            res.deleteLastPoint = true;
+                        }
+                    }
+                }
             });
+            console.log("checkFreePoints", res);
             return res;
         };
         return DefaultMethodsStrategey;
