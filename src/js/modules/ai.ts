@@ -141,6 +141,7 @@ export class Ai {
     stepAi(res, unit) {
         setTimeout(() => {
             let obj;
+            unit.moveAction = false;
             if (unit.person.class == "fighter") {
                 obj = new FightIfYouCan({
                     unit: unit,

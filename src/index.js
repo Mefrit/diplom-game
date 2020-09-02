@@ -6,14 +6,14 @@ define(["require", "exports", "react", "react-dom", "./js/loader", "./js/modules
     var loader = new loader_1.ImageDownloader();
     var arrPersons = [
         {
-            url: "./src/images/vinny.png",
-            x: 6,
+            url: "./src/images/person.jpg",
+            x: 4,
             y: 2,
             evil: true,
-            class: "archer",
-            damage: 9,
+            class: "fighter",
+            damage: 10,
             health: 50,
-            id: 5,
+            id: 4,
         },
         {
             url: "./src/images/hola.png",
@@ -24,6 +24,16 @@ define(["require", "exports", "react", "react-dom", "./js/loader", "./js/modules
             damage: 12,
             health: 50,
             id: 1,
+        },
+        {
+            url: "./src/images/hola2.png",
+            x: 0,
+            y: 1,
+            evil: false,
+            class: "fighter",
+            damage: 12,
+            health: 50,
+            id: 0,
         },
     ];
     var Director = (function () {

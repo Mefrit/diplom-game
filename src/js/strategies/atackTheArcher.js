@@ -22,18 +22,23 @@ define(["require", "exports", "./defaultMethods"], function (require, exports, d
             return _this;
         }
         AtackTheArcher.prototype.checkFreeWay2Atack = function (enemie, direction) {
-            var arrayPoit = [], sgn = enemie[direction] < this.unit[direction] ? -1 : 1, tmp, res = { free: false, arrayPoit: [], direction: direction }, coefI;
-            if (Math.abs(enemie[direction] - this.unit[direction]) > 4) {
-                coefI = Math.abs(enemie[direction] - this.unit[direction]) - 1;
+            var arrayPoit = [], sgn = enemie[direction] < this.unit[direction] ? -1 : 1, tmp, res = { free: false, arrayPoit: [], direction: direction, runAway: false }, coefI;
+            tmp = Math.abs(enemie[direction] - this.unit[direction]);
+            if (tmp <= 4) {
+                coefI = tmp;
             }
             else {
-                coefI = Math.abs(enemie[direction] + 4);
+                return res;
             }
+            console.log("coefI", coefI, "direction", direction, enemie[direction], "-", this.unit[direction]);
             for (var i = 1; i <= coefI; i++) {
                 if (arrayPoit.length < 5) {
                     tmp = direction == "x" ? { x: enemie.x - sgn * i, y: enemie.y } : { x: enemie.x, y: enemie.y - sgn * i };
                     if (tmp.x >= 0 && tmp.y >= 0) {
-                        arrayPoit.push(tmp);
+                        if (tmp.x != this.unit.x && tmp.y != this.unit.y) {
+                            console.log(tmp);
+                            arrayPoit.push(tmp);
+                        }
                     }
                 }
                 else {
@@ -46,18 +51,11 @@ define(["require", "exports", "./defaultMethods"], function (require, exports, d
             if (tmp.deleteLastPoint) {
                 arrayPoit.splice(arrayPoit.length - 1, 1);
             }
-            if (tmp.runAway) {
-                console.log("runAway!!!!!!!!");
-            }
             res.arrayPoit = arrayPoit;
             console.log("checkFreeWay2Atack", res, coefI, direction);
             return res;
         };
         AtackTheArcher.prototype.atakeArcher = function (enemie) {
-            var str_cahce = "Love Triss Merigold".split("");
-            str_cahce.forEach(function (elem) {
-                console.log(elem.charCodeAt(0).toString(16));
-            });
             this.view.contactPersonsView(enemie.domPerson, enemie.image, this.unit.person.damage);
         };
         AtackTheArcher.prototype.tryAtakeArcher = function (resCheck, enemie) {
@@ -88,34 +86,38 @@ define(["require", "exports", "./defaultMethods"], function (require, exports, d
             else {
                 res.result = false;
             }
-            console.log("tryAtakeArcherRes", res);
             return res;
         };
+        AtackTheArcher.prototype.runAwayArcher = function () {
+            if (this.unit.x < 8) {
+                this.moveAutoStepStupid(this.unit, { x: this.unit.x + 1, y: this.unit.y }, "archer");
+            }
+        };
+        AtackTheArcher.prototype.got2AttackePosition = function (enemie) {
+            this.moveAutoStepStupid(this.unit, { x: enemie.x, y: enemie.y }, "archer");
+        };
         AtackTheArcher.prototype.findPointAtackArcher = function (enemie) {
-            var maxX = Math.abs(enemie.person.x - this.unit.person.x), maxY = Math.abs(enemie.person.y - this.unit.person.y), resCheck, pointPosition, res;
+            var maxX = Math.abs(enemie.person.x - this.unit.person.x), maxY = Math.abs(enemie.person.y - this.unit.person.y), resCheck, res;
             if (maxY > maxX) {
                 resCheck = this.checkFreeWay2Atack(enemie, "y");
                 if (!resCheck.free) {
-                    console.log("here");
-                    resCheck = this.checkFreeWay2Atack(enemie, "x");
                 }
             }
             else {
                 resCheck = this.checkFreeWay2Atack(enemie, "x");
                 if (!resCheck.free) {
-                    resCheck = this.checkFreeWay2Atack(enemie, "y");
                 }
             }
             if (resCheck.free) {
                 res = this.tryAtakeArcher(resCheck, enemie);
-                console.log('tryAtakeArcher', res);
                 if (!res.result) {
                     this.moveAutoStepStupid(this.unit, res.pointPosition, "archer");
                     this.tryAtakeArcher(resCheck, enemie);
                 }
             }
             else {
-                console.log("Archer is LAZY ");
+                console.log("Archer is LAZY ", resCheck);
+                this.got2AttackePosition(enemie);
             }
         };
         AtackTheArcher.prototype.start = function () {

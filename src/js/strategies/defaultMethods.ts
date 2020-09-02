@@ -28,8 +28,8 @@ export class DefaultMethodsStrategey {
             tmp_y,
             tmp_min = 1000;
         this.unit_collection.getCollection().forEach((element) => {
-            if (!element.person.evil && !element.isDied()) {
-                console.log();
+            if (!element.person.evil && !element.isNotDied()) {
+                // console.log();
 
                 tmp_x = unit.person.x - element.person.x;
                 tmp_y = unit.person.y - element.person.y;
@@ -79,13 +79,16 @@ export class DefaultMethodsStrategey {
         return res;
     }
     heuristic(a, b) {
-
-        return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+        let res = Math.abs(a.x - b.x) + Math.abs(a.y - b.y)
+        if (b.x == 0 || b.y == 0) {
+            res += 1;
+        }
+        return res;
     }
     // автоматический путь к задангным координатам без учета возможных опасностей
     moveAutoStepStupid = (unit, enemie, type = "fighter") => {
         // нужн окак то придумать, что бы можно было обходить препятствия и строить оптимальный путь
-
+        console.log("moveAutoStepStupid enemie ", enemie);
         // хранит путь до точки
 
         let pointsNear, res = { findEnime: false, enemie: enemie, type: type };
@@ -99,7 +102,7 @@ export class DefaultMethodsStrategey {
         cost_so_far[0] = 0;
         if (this.checkEnemieNear(current, enemie, coefProximity)) {
             res.findEnime = true;
-            console.log("checkEnemieNear=>>>>>>>>>>>>in ", type);
+
             return res;
         } else {
 
@@ -122,49 +125,68 @@ export class DefaultMethodsStrategey {
                 // if (this.checkCameFromEmpty(cameFrom, elem)) {
                 // }
             });
+            // console.log({ x: unit.person.x, y: unit.person.y }, "pointsNear===============>>>>>>>>>>", pointsNear, frontier)
         }
 
         bestPoint = frontier[0];
         frontier.forEach(element => {
 
-            if (element.priority < bestPoint.priority) {
+            if (element.priority <= bestPoint.priority) {
                 // что бы искал пути, конечно это не панацея в более сложных ситуация фигурка будет тупить
                 if (type == "archer") {
                     bestPoint = element;
                 } else {
+                    // написать по нормальному!!!!!
                     if (unit.coordPrevPoint.x != element.next.x && unit.coordPrevPoint.y != element.next.y) {
+                        // console.log("unit.coordPrevPoint,", unit.coordPrevPoint, element.next);
                         bestPoint = element;
+
                     }
                 }
 
 
             }
         });
+        if (frontier.length > 0) {
+            this.moveTo(unit, bestPoint.next);
+        }
+        console.log("\n frontier", frontier);
+        current = { id: 0, x: unit.person.x, y: unit.person.y };
 
-        this.moveTo(unit, bestPoint.next);
-        current = { id: 0, x: unit.person.x, y: unit.person.y }
-        console.log("moveAutoStepStupid=>>>>>>>>>>>>in ", this.checkEnemieNear(current, enemie, coefProximity));
+        // console.log("After MOve moveAutoStepStupid=>>>>>>>>>>>>in !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", current, bestPoint, coefProximity, this.checkEnemieNear(current, enemie, coefProximity), frontier);
 
         res.findEnime = this.checkEnemieNear(current, enemie, coefProximity);
-
+        if (res.findEnime) {
+            unit.removePrevPoint();
+        }
         return res;
 
     }
     checkEnemieNear(current, enemie, coefProximity) {
 
-        return Math.abs(current.x - enemie.x) < coefProximity && Math.abs(current.y - enemie.y) < coefProximity
+        //&&  !enemie.isNotDied()
+        return Math.abs(current.x - enemie.x) < coefProximity && Math.abs(current.y - enemie.y) < coefProximity;
     }
+    // проверяет  обстановку вокруг лучника, если враг рядом, то передается координаты врага
     checkFreePoints(points, type = "fighter") {
-        let res = { free: true, deleteLastPoint: false, runAway: false };
+        let res = { free: true, deleteLastPoint: false };
+
         this.unit_collection.getCollection().forEach((unit) => {
             for (let i = 0; i < points.length; i++) {
-
+                if (points[i].x < 0 || points[i].x > 8) {
+                    res.free = false;
+                }
+                if (points[i].y < 0 || points[i].y > 3) {
+                    res.free = false;
+                }
                 if (unit.x == points[i].x && points[i].y == unit.y) {
 
                     if (!(type == "archer" && i == points.length - 1)) {
-                        if (unit.person.evil) {
-                            res.runAway = true;
-                        }
+                        // if (!unit.person.evil && Math.abs(unit.x - points[i].x) < 3) {
+                        //     console.log();
+                        //     res.runAway = true;
+                        // }
+                        console.log("\n type", type, "points", points, unit);
                         res.free = false;
 
                     } else {
@@ -176,7 +198,7 @@ export class DefaultMethodsStrategey {
 
 
         });
-        console.log("checkFreePoints", res);
+        console.log("\n\n answer checkFreePoints", res);
         return res;
     }
 }

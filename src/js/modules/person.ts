@@ -7,6 +7,8 @@ export class Person {
     x: any;
     y: any;
     coordPrevPoint: any;// координаты предыдущей точки
+
+
     domPerson: any;
     image: any; // картинка персонажа
     constructor(person) {
@@ -15,6 +17,7 @@ export class Person {
         this.y = person.y;
         this.moveAction = false;
         this.domPerson = undefined;
+
         this.coordPrevPoint = {};
         this.image = undefined
     }
@@ -33,8 +36,8 @@ export class Person {
     getUrl() {
         return this.person.url;
     }
-    isDied() {
-        return this.person.health <= 10
+    isNotDied() {
+        return this.person.health <= 10;
     }
     getId() {
         return this.person.id;
@@ -42,11 +45,16 @@ export class Person {
     getKind() {
         return this.person.evil;
     }
+    removePrevPoint() {
+        this.coordPrevPoint = {};
+    }
     setCoord(x: number, y: number) {
         this.person.x = x;
         this.person.y = y;
         this.x = x;
         this.y = y;
+        // какой ужас, но лень сделать под массивы
+        this.moveAction = true;
         this.coordPrevPoint = { x: x, y: y };
     }
     getX() {

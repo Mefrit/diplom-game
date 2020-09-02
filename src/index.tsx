@@ -18,34 +18,34 @@ let arrPersons = [
     // { url: './src/images/hola2.png', x: 3, y: essssssssssssssses4, evil: false, class: 'fighter', damage: 12, health: 50, id: 2 },
     // {
     //     url: "./src/images/person2.png",
-    //     x: 0,
+    //     x: 8,
     //     y: 0,
     //     evil: true,
     //     class: "fighter",
-    //     damage: 4,
+    //     damage: 1,
     //     health: 50,
     //     id: 3,
     // },
-    {
-        url: "./src/images/vinny.png",
-        x: 6,
-        y: 2,
-        evil: true,
-        class: "archer",
-        damage: 9,
-        health: 50,
-        id: 5,
-    },
     // {
-    //     url: "./src/images/person.jpg",
-    //     x: 2,
+    //     url: "./src/images/vinny.png",
+    //     x: 8,
     //     y: 2,
     //     evil: true,
-    //     class: "fighter",
-    //     damage: 4,
+    //     class: "archer",
+    //     damage: 5,
     //     health: 50,
-    //     id: 4,
+    //     id: 5,
     // },
+    {
+        url: "./src/images/person.jpg",
+        x: 4,
+        y: 2,
+        evil: true,
+        class: "fighter",
+        damage: 10,
+        health: 50,
+        id: 4,
+    },
     {
         url: "./src/images/hola.png",
         x: 0,
@@ -56,16 +56,16 @@ let arrPersons = [
         health: 50,
         id: 1,
     },
-    // {
-    //     url: "./src/images/hola2.png",
-    //     x: 7,
-    //     y: 1,
-    //     evil: false,
-    //     class: "fighter",
-    //     damage: 12,
-    //     health: 50,
-    //     id: 0,
-    // },
+    {
+        url: "./src/images/hola2.png",
+        x: 0,
+        y: 1,
+        evil: false,
+        class: "fighter",
+        damage: 12,
+        health: 50,
+        id: 0,
+    },
 ];
 
 class Director {
@@ -79,7 +79,6 @@ class Director {
         this.ai.initScene(this.scene);
         this.start();
     }
-
     start() {
         let play = document.createElement("input");
         play.type = "button";

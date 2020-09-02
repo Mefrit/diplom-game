@@ -26,7 +26,7 @@ define(["require", "exports"], function (require, exports) {
         Person.prototype.getUrl = function () {
             return this.person.url;
         };
-        Person.prototype.isDied = function () {
+        Person.prototype.isNotDied = function () {
             return this.person.health <= 10;
         };
         Person.prototype.getId = function () {
@@ -35,11 +35,15 @@ define(["require", "exports"], function (require, exports) {
         Person.prototype.getKind = function () {
             return this.person.evil;
         };
+        Person.prototype.removePrevPoint = function () {
+            this.coordPrevPoint = {};
+        };
         Person.prototype.setCoord = function (x, y) {
             this.person.x = x;
             this.person.y = y;
             this.x = x;
             this.y = y;
+            this.moveAction = true;
             this.coordPrevPoint = { x: x, y: y };
         };
         Person.prototype.getX = function () {

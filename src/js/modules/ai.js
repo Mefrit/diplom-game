@@ -112,6 +112,7 @@ define(["require", "exports", "../strategies/angryIfcan", "../strategies/atackTh
             var _this = this;
             setTimeout(function () {
                 var obj;
+                unit.moveAction = false;
                 if (unit.person.class == "fighter") {
                     obj = new angryIfcan_1.FightIfYouCan({
                         unit: unit,
