@@ -41,7 +41,7 @@ export class DefaultMethodsStrategey {
                 }
             }
         });
-
+        console.log("findNearestEnemies=>", unit, nearEnemies);
         return nearEnemies;
     }
     //указывает на лучшую  точку
@@ -137,17 +137,18 @@ export class DefaultMethodsStrategey {
                     bestPoint = element;
                 } else {
                     // написать по нормальному!!!!!
-                    if (unit.coordPrevPoint.x != element.next.x && unit.coordPrevPoint.y != element.next.y) {
-                        // console.log("unit.coordPrevPoint,", unit.coordPrevPoint, element.next);
-                        bestPoint = element;
+                    // if (unit.coordPrevPoint.x != element.next.x && unit.coordPrevPoint.y != element.next.y) {
+                    // console.log("unit.coordPrevPoint,", unit.coordPrevPoint, element.next);
+                    bestPoint = element;
 
-                    }
+                    // }
                 }
 
 
             }
         });
         if (frontier.length > 0) {
+            console.log(" this.moveTo(unit, bestPoint.next);", unit, bestPoint)
             this.moveTo(unit, bestPoint.next);
         }
         console.log("\n frontier", frontier);

@@ -6,12 +6,22 @@ define(["require", "exports", "react", "react-dom", "./js/loader", "./js/modules
     var loader = new loader_1.ImageDownloader();
     var arrPersons = [
         {
+            url: "./src/images/person2.png",
+            x: 8,
+            y: 0,
+            evil: true,
+            class: "fighter",
+            damage: 1,
+            health: 50,
+            id: 3,
+        },
+        {
             url: "./src/images/person.jpg",
             x: 4,
             y: 2,
             evil: true,
             class: "fighter",
-            damage: 10,
+            damage: 1,
             health: 50,
             id: 4,
         },

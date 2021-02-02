@@ -44,13 +44,12 @@ define(["require", "exports"], function (require, exports) {
                             bestPoint = element;
                         }
                         else {
-                            if (unit.coordPrevPoint.x != element.next.x && unit.coordPrevPoint.y != element.next.y) {
-                                bestPoint = element;
-                            }
+                            bestPoint = element;
                         }
                     }
                 });
                 if (frontier.length > 0) {
+                    console.log(" this.moveTo(unit, bestPoint.next);", unit, bestPoint);
                     _this.moveTo(unit, bestPoint.next);
                 }
                 console.log("\n frontier", frontier);
@@ -83,6 +82,7 @@ define(["require", "exports"], function (require, exports) {
                     }
                 }
             });
+            console.log("findNearestEnemies=>", unit, nearEnemies);
             return nearEnemies;
         };
         DefaultMethodsStrategey.prototype.deleteExcessCoord = function (cahceCoord) {
