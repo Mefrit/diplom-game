@@ -14,6 +14,7 @@ var __extends = (this && this.__extends) || (function () {
 define(["require", "exports", "./defaultMethods"], function (require, exports, defaultMethods_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    exports.AtackTheArcher = void 0;
     var AtackTheArcher = (function (_super) {
         __extends(AtackTheArcher, _super);
         function AtackTheArcher(props) {
@@ -52,7 +53,6 @@ define(["require", "exports", "./defaultMethods"], function (require, exports, d
                 arrayPoit.splice(arrayPoit.length - 1, 1);
             }
             res.arrayPoit = arrayPoit;
-            console.log("checkFreeWay2Atack", res, coefI, direction);
             return res;
         };
         AtackTheArcher.prototype.atakeArcher = function (enemie) {
@@ -71,15 +71,20 @@ define(["require", "exports", "./defaultMethods"], function (require, exports, d
                 yLineCondition = false;
             }
             if (yLineCondition || xLineCondition || resCheck.arrayPoit.length == 0) {
+                console.log("Math.abs(this.unit.x - enemie.x)", Math.abs(this.unit.x - enemie.x), Math.abs(this.unit.x - enemie.x) < 5);
                 if (Math.abs(this.unit.x - enemie.x) < 5) {
-                    if (false) { }
-                    else {
-                        console.log("HERE", resCheck);
-                        this.atakeArcher(enemie);
+                    if (this.unit.y == enemie.y && Math.abs(this.unit.x - enemie.x) < 2) {
+                        console.log("must upstairs archer");
+                        this.moveAutoStepStupid(this.unit, enemie, "archer");
                     }
+                    if (this.unit.x == enemie.x && Math.abs(this.unit.y - enemie.y) < 2) {
+                        console.log("must upstairs archer");
+                        this.moveAutoStepStupid(this.unit, enemie, "archer");
+                    }
+                    this.atakeArcher(enemie);
                 }
                 else {
-                    console.log("moveAutoStepStupid", pointPosition);
+                    console.log("moveAutoStepStupid pointPosition", pointPosition);
                     this.moveAutoStepStupid(this.unit, pointPosition, "archer");
                 }
             }
@@ -94,6 +99,7 @@ define(["require", "exports", "./defaultMethods"], function (require, exports, d
             }
         };
         AtackTheArcher.prototype.got2AttackePosition = function (enemie) {
+            console.log(" moveAutoStepStupid got2AttackePosition", enemie);
             this.moveAutoStepStupid(this.unit, { x: enemie.x, y: enemie.y }, "archer");
         };
         AtackTheArcher.prototype.findPointAtackArcher = function (enemie) {

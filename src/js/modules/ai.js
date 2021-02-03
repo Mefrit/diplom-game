@@ -1,6 +1,7 @@
 define(["require", "exports", "../strategies/angryIfcan", "../strategies/atackTheArcher"], function (require, exports, angryIfcan_1, atackTheArcher_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    exports.Ai = void 0;
     var Ai = (function () {
         function Ai(arrAllPersons) {
             var _this = this;

@@ -40,14 +40,11 @@ export class AtackTheArcher extends DefaultMethodsStrategey {
         if (tmp.deleteLastPoint) {
             arrayPoit.splice(arrayPoit.length - 1, 1);
         }
-
-
         res.arrayPoit = arrayPoit;
-        console.log("checkFreeWay2Atack", res, coefI, direction);
+
         return res;
     }
     atakeArcher(enemie) {
-
         this.view.contactPersonsView(enemie.domPerson, enemie.image, this.unit.person.damage);
     }
     tryAtakeArcher(resCheck, enemie) {
@@ -63,13 +60,21 @@ export class AtackTheArcher extends DefaultMethodsStrategey {
             yLineCondition = false;
         }
         if (yLineCondition || xLineCondition || resCheck.arrayPoit.length == 0) {
+            console.log("Math.abs(this.unit.x - enemie.x)", Math.abs(this.unit.x - enemie.x), Math.abs(this.unit.x - enemie.x) < 5);
             if (Math.abs(this.unit.x - enemie.x) < 5) {
-                if (false) { } else {
-                    console.log("HERE", resCheck)
-                    this.atakeArcher(enemie);
+                if (this.unit.y == enemie.y && Math.abs(this.unit.x - enemie.x) < 2) {
+                    console.log("must upstairs archer")
+                    // this.moveAutoStepStupid(this.unit, pointPosition, "archer");
+                    this.moveAutoStepStupid(this.unit, enemie, "archer");
                 }
+                if (this.unit.x == enemie.x && Math.abs(this.unit.y - enemie.y) < 2) {
+                    console.log("must upstairs archer")
+                    // this.moveAutoStepStupid(this.unit, pointPosition, "archer");
+                    this.moveAutoStepStupid(this.unit, enemie, "archer");
+                }
+                this.atakeArcher(enemie);
             } else {
-                console.log("moveAutoStepStupid", pointPosition)
+                console.log("moveAutoStepStupid pointPosition", pointPosition)
                 this.moveAutoStepStupid(this.unit, pointPosition, "archer");
             }
 
@@ -86,6 +91,7 @@ export class AtackTheArcher extends DefaultMethodsStrategey {
         }
     }
     got2AttackePosition(enemie) {
+        console.log(" moveAutoStepStupid got2AttackePosition", enemie);
         this.moveAutoStepStupid(this.unit, { x: enemie.x, y: enemie.y }, "archer");
     }
     findPointAtackArcher(enemie) {

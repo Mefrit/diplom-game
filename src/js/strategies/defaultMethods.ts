@@ -41,7 +41,7 @@ export class DefaultMethodsStrategey {
                 }
             }
         });
-        console.log("findNearestEnemies=>", unit, nearEnemies);
+        // console.log("findNearestEnemies=>", unit, nearEnemies);
         return nearEnemies;
     }
     //указывает на лучшую  точку
@@ -72,17 +72,43 @@ export class DefaultMethodsStrategey {
     checkCameFromEmpty(cameFrom, point) {
         let res = true;
         cameFrom.forEach((element) => {
+
             if (element.x == point.x && element.y == point.y) {
                 res = false;
             }
         });
         return res;
     }
-    heuristic(a, b) {
-        let res = Math.abs(a.x - b.x) + Math.abs(a.y - b.y)
-        if (b.x == 0 || b.y == 0) {
-            res += 1;
+    // type предназначен для того, что бы лучше выбирать точкки для  лучника
+    heuristic(a, b, type) {
+        // console.log("a,=>>> ", a, b);
+        let res = Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+        switch (type) {
+            case "archer":
+                console.log("archer\n\n");
+                if (Math.abs(a.x - b.x) >= 2) {
+                    res += 0.2;
+                }
+                if (Math.abs(a.x - b.x) <= 1) {
+                    res += 2;
+                }
+                if (a.y == b.y) {
+                    res += 0.5;
+                }
+                if (a.y != b.y) {
+                    res += 1;
+                }
+                break
+            default:
+                if (a.x == b.x || a.y == b.y) {
+                    res += 1;
+                }
+                break
         }
+
+        // if (b.x == 0 || b.y == 0) {
+        //     res += 1;
+        // }
         return res;
     }
     // автоматический путь к задангным координатам без учета возможных опасностей
@@ -116,7 +142,7 @@ export class DefaultMethodsStrategey {
                 if (cost_so_far.indexOf(next.id) == -1 || new_cost < cost_so_far[next.id]) {
                     cost_so_far[next.id] = new_cost;
                     // priority = this.heuristic({ x: nearEnemie.person.x, y: nearEnemie.person.y }, next);
-                    priority = this.heuristic({ x: enemie.x, y: enemie.y }, next);
+                    priority = this.heuristic({ x: enemie.x, y: enemie.y }, next, type);
 
                     frontier.push({ next: next, priority: priority });
                     came_from[next.id] = current;
@@ -129,6 +155,7 @@ export class DefaultMethodsStrategey {
         }
 
         bestPoint = frontier[0];
+        console.log("frontier=> ", frontier);
         frontier.forEach(element => {
 
             if (element.priority <= bestPoint.priority) {
@@ -151,7 +178,7 @@ export class DefaultMethodsStrategey {
             console.log(" this.moveTo(unit, bestPoint.next);", unit, bestPoint)
             this.moveTo(unit, bestPoint.next);
         }
-        console.log("\n frontier", frontier);
+        // console.log("\n frontier", frontier);
         current = { id: 0, x: unit.person.x, y: unit.person.y };
 
         // console.log("After MOve moveAutoStepStupid=>>>>>>>>>>>>in !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", current, bestPoint, coefProximity, this.checkEnemieNear(current, enemie, coefProximity), frontier);

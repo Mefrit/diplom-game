@@ -1,6 +1,7 @@
 define(["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    exports.DefaultMethodsStrategey = void 0;
     var DefaultMethodsStrategey = (function () {
         function DefaultMethodsStrategey(props) {
             var _this = this;
@@ -31,13 +32,14 @@ define(["require", "exports"], function (require, exports) {
                         new_cost = cost_so_far[current.id] + 1;
                         if (cost_so_far.indexOf(next.id) == -1 || new_cost < cost_so_far[next.id]) {
                             cost_so_far[next.id] = new_cost;
-                            priority = _this.heuristic({ x: enemie.x, y: enemie.y }, next);
+                            priority = _this.heuristic({ x: enemie.x, y: enemie.y }, next, type);
                             frontier.push({ next: next, priority: priority });
                             came_from[next.id] = current;
                         }
                     });
                 }
                 bestPoint = frontier[0];
+                console.log("frontier=> ", frontier);
                 frontier.forEach(function (element) {
                     if (element.priority <= bestPoint.priority) {
                         if (type == "archer") {
@@ -52,7 +54,6 @@ define(["require", "exports"], function (require, exports) {
                     console.log(" this.moveTo(unit, bestPoint.next);", unit, bestPoint);
                     _this.moveTo(unit, bestPoint.next);
                 }
-                console.log("\n frontier", frontier);
                 current = { id: 0, x: unit.person.x, y: unit.person.y };
                 res.findEnime = _this.checkEnemieNear(current, enemie, coefProximity);
                 if (res.findEnime) {
@@ -82,7 +83,6 @@ define(["require", "exports"], function (require, exports) {
                     }
                 }
             });
-            console.log("findNearestEnemies=>", unit, nearEnemies);
             return nearEnemies;
         };
         DefaultMethodsStrategey.prototype.deleteExcessCoord = function (cahceCoord) {
@@ -107,10 +107,29 @@ define(["require", "exports"], function (require, exports) {
             });
             return res;
         };
-        DefaultMethodsStrategey.prototype.heuristic = function (a, b) {
+        DefaultMethodsStrategey.prototype.heuristic = function (a, b, type) {
             var res = Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
-            if (b.x == 0 || b.y == 0) {
-                res += 1;
+            switch (type) {
+                case "archer":
+                    console.log("archer\n\n");
+                    if (Math.abs(a.x - b.x) >= 2) {
+                        res += 0.2;
+                    }
+                    if (Math.abs(a.x - b.x) <= 1) {
+                        res += 2;
+                    }
+                    if (a.y == b.y) {
+                        res += 0.5;
+                    }
+                    if (a.y != b.y) {
+                        res += 1;
+                    }
+                    break;
+                default:
+                    if (a.x == b.x || a.y == b.y) {
+                        res += 1;
+                    }
+                    break;
             }
             return res;
         };
