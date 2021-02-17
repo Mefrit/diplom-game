@@ -5,41 +5,47 @@ define(["require", "exports"], function (require, exports) {
     var DefaultMethodsStrategey = (function () {
         function DefaultMethodsStrategey(props) {
             var _this = this;
-            this.getNeighbors = function (coord) {
+            this.getNeighbors = function (coord, type) {
+                if (type === void 0) { type = "figter"; }
                 var res = [];
-                for (var i = -1; i < 2; i++) {
-                    for (var j = -1; j < 2; j++) {
+                for (var i = -2; i < 3; i++) {
+                    for (var j = -2; j < 3; j++) {
                         res.push({ x: coord.x + i, y: coord.y + j });
                     }
                 }
-                return _this.deleteExcessCoord(res);
+                res = _this.deleteExcessCoord(res);
+                if (type == "arcger") {
+                    res.push({ x: coord.x, y: coord.y });
+                }
+                return res;
             };
-            this.moveAutoStepStupid = function (unit, enemie, type) {
+            this.moveAutoStepStupid = function (unit, perso2go, type) {
                 if (type === void 0) { type = "fighter"; }
-                console.log("moveAutoStepStupid enemie ", enemie);
-                var pointsNear, res = { findEnime: false, enemie: enemie, type: type };
+                var pointsNear, res = { findEnime: false, enemie: perso2go, type: type };
                 var current = { id: 0, x: unit.person.x, y: unit.person.y }, came_from = {}, frontier = [], cost_so_far = [], new_cost, priority, bestPoint, coefProximity = type == "archer" ? 1 : 2;
                 came_from[0] = NaN;
                 cost_so_far[0] = 0;
-                if (_this.checkEnemieNear(current, enemie, coefProximity)) {
+                if (_this.checkEnemieNear(current, perso2go, coefProximity)) {
                     res.findEnime = true;
+                    if (!!res.enemie) {
+                        res.enemie;
+                    }
                     return res;
                 }
                 else {
-                    pointsNear = _this.getNeighbors({ x: unit.person.x, y: unit.person.y });
+                    pointsNear = _this.getNeighbors({ x: unit.person.x, y: unit.person.y }, type);
                     pointsNear.forEach(function (next, index, arr) {
                         next.id = unit.person.x + unit.person.y + index;
                         new_cost = cost_so_far[current.id] + 1;
                         if (cost_so_far.indexOf(next.id) == -1 || new_cost < cost_so_far[next.id]) {
                             cost_so_far[next.id] = new_cost;
-                            priority = _this.heuristic({ x: enemie.x, y: enemie.y }, next, type);
+                            priority = _this.heuristic({ x: perso2go.x, y: perso2go.y }, next, type);
                             frontier.push({ next: next, priority: priority });
                             came_from[next.id] = current;
                         }
                     });
                 }
                 bestPoint = frontier[0];
-                console.log("frontier=> ", frontier);
                 frontier.forEach(function (element) {
                     if (element.priority <= bestPoint.priority) {
                         if (type == "archer") {
@@ -51,11 +57,10 @@ define(["require", "exports"], function (require, exports) {
                     }
                 });
                 if (frontier.length > 0) {
-                    console.log(" this.moveTo(unit, bestPoint.next);", unit, bestPoint);
                     _this.moveTo(unit, bestPoint.next);
                 }
                 current = { id: 0, x: unit.person.x, y: unit.person.y };
-                res.findEnime = _this.checkEnemieNear(current, enemie, coefProximity);
+                res.findEnime = _this.checkEnemieNear(current, perso2go, coefProximity);
                 if (res.findEnime) {
                     unit.removePrevPoint();
                 }
@@ -69,6 +74,21 @@ define(["require", "exports"], function (require, exports) {
             person.setCoord(coord.x, coord.y);
             this.unit_collection.updateElement(person);
             this.scene.renderElement(person);
+        };
+        DefaultMethodsStrategey.prototype.findNearestArchers = function (unit) {
+            var min = 1000, nearArcher = undefined, tmp_x, tmp_y, tmp_min = 1000;
+            this.unit_collection.getCollection().forEach(function (element) {
+                if (element.person.evil && !element.isNotDied() && element.person.class == 'archer') {
+                    tmp_x = unit.person.x - element.person.x;
+                    tmp_y = unit.person.y - element.person.y;
+                    tmp_min = Math.sqrt(tmp_x * tmp_x + tmp_y * tmp_y);
+                    if (min > tmp_min) {
+                        min = tmp_min;
+                        nearArcher = element;
+                    }
+                }
+            });
+            return nearArcher;
         };
         DefaultMethodsStrategey.prototype.findNearestEnemies = function (unit) {
             var min = 1000, nearEnemies = undefined, tmp_x, tmp_y, tmp_min = 1000;
@@ -89,8 +109,8 @@ define(["require", "exports"], function (require, exports) {
             var _this = this;
             if (cahceCoord === void 0) { cahceCoord = []; }
             return cahceCoord.filter(function (elem) {
-                if (elem.x >= 0 && elem.x <= 8) {
-                    if (elem.y >= 0 && elem.y <= 4) {
+                if (elem.x >= 0 && elem.x < 11) {
+                    if (elem.y >= 0 && elem.y < 6) {
                         if (_this.unit_collection.checkFreeCoord({ x: elem.x, y: elem.y })) {
                             return elem;
                         }
@@ -111,25 +131,66 @@ define(["require", "exports"], function (require, exports) {
             var res = Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
             switch (type) {
                 case "archer":
-                    console.log("archer\n\n");
-                    if (Math.abs(a.x - b.x) >= 2) {
-                        res += 0.2;
+                    if (Math.abs(a.x - b.x) < 4) {
+                        res += 10;
+                        if (Math.abs(a.x - b.x) < 3) {
+                            res += 10;
+                        }
+                        if (Math.abs(a.x - b.x) < 2) {
+                            res += 40;
+                        }
                     }
-                    if (Math.abs(a.x - b.x) <= 1) {
-                        res += 2;
+                    else {
+                        if (Math.abs(a.x - b.x) > 3) {
+                            res += Math.abs(a.x - b.x) + 10;
+                        }
                     }
-                    if (a.y == b.y) {
+                    if (Math.abs(a.x - b.x) < 1) {
                         res += 0.5;
                     }
-                    if (a.y != b.y) {
-                        res += 1;
+                    if (Math.abs(a.y - b.y) < 2) {
+                        res += Math.abs(a.y - b.y);
+                    }
+                    if (Math.abs(a.y - b.y) < 3) {
+                        res += Math.abs(a.y - b.y) + 5;
+                    }
+                    if (Math.abs(a.y - b.y) >= 3) {
+                        res += Math.abs(a.y - b.y) + 10;
                     }
                     break;
                 default:
-                    if (a.x == b.x || a.y == b.y) {
-                        res += 1;
-                    }
+                    res += Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
                     break;
+            }
+            return res;
+        };
+        DefaultMethodsStrategey.prototype.checkArcherPosition = function (enemie) {
+            var res = { point: {}, result: false };
+            if (Math.abs(enemie.x - this.unit.x) < 2) {
+                if (this.checkFreePoints({ x: enemie.x, y: enemie.y - 1 })) {
+                    res.result = true;
+                    res.point = { x: enemie.x, y: enemie.y - 1 };
+                    return res;
+                }
+                if (this.checkFreePoints({ x: enemie.x, y: enemie.y + 1 })) {
+                    res.result = true;
+                    res.point = { x: enemie.x, y: enemie.y + 1 };
+                    return res;
+                }
+            }
+            else {
+                if (Math.abs(enemie.y - this.unit.y) < 2) {
+                    if (this.checkFreePoints({ x: enemie.x - 1, y: enemie.y })) {
+                        res.result = true;
+                        res.point = { x: enemie.x - 1, y: enemie.y };
+                        return res;
+                    }
+                    if (this.checkFreePoints({ x: enemie.x + 1, y: enemie.y })) {
+                        res.result = true;
+                        res.point = { x: enemie.x + 1, y: enemie.y };
+                        return res;
+                    }
+                }
             }
             return res;
         };
@@ -158,7 +219,6 @@ define(["require", "exports"], function (require, exports) {
                     }
                 }
             });
-            console.log("\n\n answer checkFreePoints", res);
             return res;
         };
         return DefaultMethodsStrategey;

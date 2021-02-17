@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "./defaultMethods"], function (require, exports, defaultMethods_1) {
+define(["require", "exports", "../lib/defaultMethods"], function (require, exports, defaultMethods_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.FightIfYouCan = void 0;
@@ -29,43 +29,12 @@ define(["require", "exports", "./defaultMethods"], function (require, exports, d
             if (res.findEnime == true) {
                 attakedEnemie = this.findEnemieForAtake(res.enemie);
                 this.view.contactPersonsView(res.enemie.domPerson, res.enemie.image, this.unit.person.damage);
-                console.log(res.enemie, this.view);
                 checkArcherPosition = this.checkArcherPosition(res.enemie);
                 if (checkArcherPosition.result && !this.unit.moveAction) {
                     console.log("checkArcherPosition", checkArcherPosition);
                     this.moveAutoStepStupid(this.unit, checkArcherPosition.point, "fighter");
                 }
             }
-        };
-        FightIfYouCan.prototype.checkArcherPosition = function (enemie) {
-            var res = { point: {}, result: false };
-            if (Math.abs(enemie.x - this.unit.x) < 2) {
-                if (this.checkFreePoints({ x: enemie.x, y: enemie.y - 1 })) {
-                    res.result = true;
-                    res.point = { x: enemie.x, y: enemie.y - 1 };
-                    return res;
-                }
-                if (this.checkFreePoints({ x: enemie.x, y: enemie.y + 1 })) {
-                    res.result = true;
-                    res.point = { x: enemie.x, y: enemie.y + 1 };
-                    return res;
-                }
-            }
-            else {
-                if (Math.abs(enemie.y - this.unit.y) < 2) {
-                    if (this.checkFreePoints({ x: enemie.x - 1, y: enemie.y })) {
-                        res.result = true;
-                        res.point = { x: enemie.x - 1, y: enemie.y };
-                        return res;
-                    }
-                    if (this.checkFreePoints({ x: enemie.x + 1, y: enemie.y })) {
-                        res.result = true;
-                        res.point = { x: enemie.x + 1, y: enemie.y };
-                        return res;
-                    }
-                }
-            }
-            return res;
         };
         FightIfYouCan.prototype.findEnemieForAtake = function (enemie) {
             return enemie;

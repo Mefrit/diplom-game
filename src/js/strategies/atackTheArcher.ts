@@ -1,4 +1,4 @@
-import { DefaultMethodsStrategey } from "./defaultMethods";
+import { DefaultMethodsStrategey } from "../lib/defaultMethods";
 export class AtackTheArcher extends DefaultMethodsStrategey {
     unit: any;
     coordsEvil: any;
@@ -18,15 +18,15 @@ export class AtackTheArcher extends DefaultMethodsStrategey {
             return res;
             // coefI = Math.abs(enemie[direction] + 4);
         }
-        console.log("coefI", coefI, "direction", direction, enemie[direction], "-", this.unit[direction]);
+        // console.log("coefI", coefI, "direction", direction, enemie[direction], "-", this.unit[direction]);
         for (let i = 1; i <= coefI; i++) {
 
-            if (arrayPoit.length < 5) {
+            if (arrayPoit.length < 6) {
                 tmp = direction == "x" ? { x: enemie.x - sgn * i, y: enemie.y } : { x: enemie.x, y: enemie.y - sgn * i };
 
                 if (tmp.x >= 0 && tmp.y >= 0) {
                     if (tmp.x != this.unit.x && tmp.y != this.unit.y) {
-                        console.log(tmp);
+
                         arrayPoit.push(tmp);
                     }
                 }
@@ -60,22 +60,24 @@ export class AtackTheArcher extends DefaultMethodsStrategey {
             yLineCondition = false;
         }
         if (yLineCondition || xLineCondition || resCheck.arrayPoit.length == 0) {
-            console.log("Math.abs(this.unit.x - enemie.x)", Math.abs(this.unit.x - enemie.x), Math.abs(this.unit.x - enemie.x) < 5);
-            if (Math.abs(this.unit.x - enemie.x) < 5) {
-                if (this.unit.y == enemie.y && Math.abs(this.unit.x - enemie.x) < 2) {
-                    console.log("must upstairs archer")
+            // console.log("Math.abs(this.unit.x - enemie.x)", Math.abs(this.unit.x - enemie.x), Math.abs(this.unit.x - enemie.x) < 5);
+            if (Math.abs(this.unit.x - enemie.x) < 6) {
+                // console.log("Math.abs(t", Math.abs(this.unit.x - enemie.x), this.unit.x, "-", enemie.x);
+                // console.log("\n\n archer enemie", enemie);
+                if (Math.abs(this.unit.x - enemie.x) < 3 && !this.unit.moveAction) {
+                    // console.log("must upstairs archer 1 ")
                     // this.moveAutoStepStupid(this.unit, pointPosition, "archer");
                     this.moveAutoStepStupid(this.unit, enemie, "archer");
-                }
-                if (this.unit.x == enemie.x && Math.abs(this.unit.y - enemie.y) < 2) {
-                    console.log("must upstairs archer")
-                    // this.moveAutoStepStupid(this.unit, pointPosition, "archer");
-                    this.moveAutoStepStupid(this.unit, enemie, "archer");
-                }
+                } else
+                    if (Math.abs(this.unit.y - enemie.y) < 2 && this.unit.y != enemie.y && !this.unit.moveAction) {
+                        // console.log("must upstairs archer 2", this.unit.y, "-", enemie.y)
+                        // this.moveAutoStepStupid(this.unit, pointPosition, "archer");
+                        this.moveAutoStepStupid(this.unit, enemie, "archer");
+                    }
                 this.atakeArcher(enemie);
             } else {
-                console.log("moveAutoStepStupid pointPosition", pointPosition)
-                this.moveAutoStepStupid(this.unit, pointPosition, "archer");
+                console.log("\n\n FIX ME!!! moveAutoStepStupid pointPosition", pointPosition)
+                // this.moveAutoStepStupid(this.unit, pointPosition, "archer");
             }
 
             // проверка на тикать от сюда
@@ -91,7 +93,7 @@ export class AtackTheArcher extends DefaultMethodsStrategey {
         }
     }
     got2AttackePosition(enemie) {
-        console.log(" moveAutoStepStupid got2AttackePosition", enemie);
+        // console.log(" moveAutoStepStupid got2AttackePosition", enemie);
         this.moveAutoStepStupid(this.unit, { x: enemie.x, y: enemie.y }, "archer");
     }
     findPointAtackArcher(enemie) {
@@ -101,33 +103,30 @@ export class AtackTheArcher extends DefaultMethodsStrategey {
         if (maxY > maxX) {
             resCheck = this.checkFreeWay2Atack(enemie, "y");
             if (!resCheck.free) {
-
                 // resCheck = this.checkFreeWay2Atack(enemie, "x");
-
             }
         } else {
             resCheck = this.checkFreeWay2Atack(enemie, "x");
             if (!resCheck.free) {
-
                 // resCheck = this.checkFreeWay2Atack(enemie, "y");
-
             }
         }
-
+        // console.log(resCheck.free);
         if (resCheck.free) {
-
+            // console.log("\n\n enemir archer 2 ", enemie)
             res = this.tryAtakeArcher(resCheck, enemie);
             // console.log('tryAtakeArcher', res)
             if (!res.result) {
 
-                this.moveAutoStepStupid(this.unit, res.pointPosition, "archer");
+                // this.moveAutoStepStupid(this.unit, res.pointPosition, "archer");
+                this.moveAutoStepStupid(this.unit, enemie, "archer");
                 this.tryAtakeArcher(resCheck, enemie);
             }
 
 
         } else {
             // if (resCheck.runAway) {
-            console.log("Archer is LAZY ", resCheck);
+            // console.log("Archer is LAZY ", resCheck);
             this.got2AttackePosition(enemie);
             //     console.log("Archer is LAZY ");
             //     this.runAwayArcher();

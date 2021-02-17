@@ -1,7 +1,6 @@
 import { MoveRandomPerson } from "../strategies/move";
-import { FightIfYouCan } from "../strategies/angryIfcan";
-import { AtackTheArcher } from "../strategies/atackTheArcher";
-
+import { } from "../globalStrategies/globalMaxAgro"
+// FightIfYouCan
 export class Ai {
     arrOwnPerson: any;
     arrAllPersons: any;
@@ -12,11 +11,7 @@ export class Ai {
     // обьект для рендера элементов
     scene: any;
     constructor(arrAllPersons) {
-        // this.arrAllPersons = arrAllPersons;
-        // this.arrOwnPerson = arrAllPersons.filter(elem => {
-        //     if (elem.evil) {
-        //         return elem;
-        //     }
+
         this.scene = {};
         //тут храняться занятые координаты( то бишь, что бы не на 1 клетку ходили )\
         this.cache_coord_bots = [];
@@ -138,30 +133,44 @@ export class Ai {
         });
         return result;
     };
+    choseGlobalStr() {
+        return
+    }
     stepAi(res, unit) {
-        setTimeout(() => {
-            let obj;
-            unit.moveAction = false;
-            if (unit.person.class == "fighter") {
-                obj = new FightIfYouCan({
-                    unit: unit,
-                    result: res,
-                    scene: this.scene,
-                    unit_collection: this.unit_collection,
-                    view: this.view
-                });
-                obj.attackPerson();
-            } else {
-                obj = new AtackTheArcher({
-                    unit: unit,
-                    result: res,
-                    scene: this.scene,
-                    unit_collection: this.unit_collection,
-                    view: this.view
-                });
-                obj.start();
-            }
-        }, 100)
+        // вообщем я сделал стратегии длоя 1го персонажа, теперь нужно сделать надстройку, которая будет управлять этими персонажами
+
+
+        // setTimeout(() => {
+        //     let obj;
+        //     unit.moveAction = false;
+        //     if (unit.person.class == "fighter") {
+        //         // obj = new FightIfYouCan({
+        //         //     unit: unit,
+        //         //     result: res,
+        //         //     scene: this.scene,
+        //         //     unit_collection: this.unit_collection,
+        //         //     view: this.view
+        //         // });
+        //         obj = new SecurityArcher({
+        //             unit: unit,
+        //             result: res,
+        //             scene: this.scene,
+        //             unit_collection: this.unit_collection,
+        //             view: this.view
+        //         });
+        //         // SecurityArcher
+        //         obj.start();
+        //     } else {
+        //         obj = new AtackTheArcher({
+        //             unit: unit,
+        //             result: res,
+        //             scene: this.scene,
+        //             unit_collection: this.unit_collection,
+        //             view: this.view
+        //         });
+        //         obj.start();
+        //     }
+        // }, 100);
 
         // } else {
         //     // рандомный ход

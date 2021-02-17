@@ -44,6 +44,7 @@ define(["require", "exports"], function (require, exports) {
             this.person.y = y;
             this.x = x;
             this.y = y;
+            this.use = false;
             this.moveAction = true;
             this.coordPrevPoint = { x: x, y: y };
         };

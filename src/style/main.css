@@ -13,14 +13,14 @@ body,html{
     left:0;
     top:0;
     width:100%;
-    max-width:1280px;
-    margin:0 auto;
+    /* max-width:1280px; */
+    margin:0;
     height: 90vh;
 }
 .button{
     float:left;
     position: relative;
-    top:612px;
+    top: 852px;
     left: 100px;
 }
 .sence__block{

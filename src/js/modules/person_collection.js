@@ -35,6 +35,13 @@ define(["require", "exports", "./person"], function (require, exports, person_1)
                 }
             });
         };
+        Collection.prototype.getAiArchers = function () {
+            return this.collection.filter(function (elem) {
+                if (elem.person.evil && elem.person.class == 'archer') {
+                    return elem;
+                }
+            });
+        };
         Collection.prototype.updateElement = function (unit) {
             this.collection = this.collection.map(function (elem) {
                 if (unit.getId() == elem.getId()) {

@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "./defaultMethods"], function (require, exports, defaultMethods_1) {
+define(["require", "exports", "../lib/defaultMethods"], function (require, exports, defaultMethods_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.AtackTheArcher = void 0;
@@ -31,13 +31,11 @@ define(["require", "exports", "./defaultMethods"], function (require, exports, d
             else {
                 return res;
             }
-            console.log("coefI", coefI, "direction", direction, enemie[direction], "-", this.unit[direction]);
             for (var i = 1; i <= coefI; i++) {
-                if (arrayPoit.length < 5) {
+                if (arrayPoit.length < 6) {
                     tmp = direction == "x" ? { x: enemie.x - sgn * i, y: enemie.y } : { x: enemie.x, y: enemie.y - sgn * i };
                     if (tmp.x >= 0 && tmp.y >= 0) {
                         if (tmp.x != this.unit.x && tmp.y != this.unit.y) {
-                            console.log(tmp);
                             arrayPoit.push(tmp);
                         }
                     }
@@ -71,21 +69,17 @@ define(["require", "exports", "./defaultMethods"], function (require, exports, d
                 yLineCondition = false;
             }
             if (yLineCondition || xLineCondition || resCheck.arrayPoit.length == 0) {
-                console.log("Math.abs(this.unit.x - enemie.x)", Math.abs(this.unit.x - enemie.x), Math.abs(this.unit.x - enemie.x) < 5);
-                if (Math.abs(this.unit.x - enemie.x) < 5) {
-                    if (this.unit.y == enemie.y && Math.abs(this.unit.x - enemie.x) < 2) {
-                        console.log("must upstairs archer");
+                if (Math.abs(this.unit.x - enemie.x) < 6) {
+                    if (Math.abs(this.unit.x - enemie.x) < 3 && !this.unit.moveAction) {
                         this.moveAutoStepStupid(this.unit, enemie, "archer");
                     }
-                    if (this.unit.x == enemie.x && Math.abs(this.unit.y - enemie.y) < 2) {
-                        console.log("must upstairs archer");
+                    else if (Math.abs(this.unit.y - enemie.y) < 2 && this.unit.y != enemie.y && !this.unit.moveAction) {
                         this.moveAutoStepStupid(this.unit, enemie, "archer");
                     }
                     this.atakeArcher(enemie);
                 }
                 else {
-                    console.log("moveAutoStepStupid pointPosition", pointPosition);
-                    this.moveAutoStepStupid(this.unit, pointPosition, "archer");
+                    console.log("\n\n FIX ME!!! moveAutoStepStupid pointPosition", pointPosition);
                 }
             }
             else {
@@ -99,7 +93,6 @@ define(["require", "exports", "./defaultMethods"], function (require, exports, d
             }
         };
         AtackTheArcher.prototype.got2AttackePosition = function (enemie) {
-            console.log(" moveAutoStepStupid got2AttackePosition", enemie);
             this.moveAutoStepStupid(this.unit, { x: enemie.x, y: enemie.y }, "archer");
         };
         AtackTheArcher.prototype.findPointAtackArcher = function (enemie) {
@@ -117,12 +110,11 @@ define(["require", "exports", "./defaultMethods"], function (require, exports, d
             if (resCheck.free) {
                 res = this.tryAtakeArcher(resCheck, enemie);
                 if (!res.result) {
-                    this.moveAutoStepStupid(this.unit, res.pointPosition, "archer");
+                    this.moveAutoStepStupid(this.unit, enemie, "archer");
                     this.tryAtakeArcher(resCheck, enemie);
                 }
             }
             else {
-                console.log("Archer is LAZY ", resCheck);
                 this.got2AttackePosition(enemie);
             }
         };

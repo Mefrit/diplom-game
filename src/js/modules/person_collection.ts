@@ -34,6 +34,13 @@ export class Collection {
             }
         });
     }
+    getAiArchers() {
+        return this.collection.filter((elem) => {
+            if (elem.person.evil && elem.person.class == 'archer') {
+                return elem;
+            }
+        });
+    }
     updateElement(unit) {
         this.collection = this.collection.map((elem) => {
             if (unit.getId() == elem.getId()) {

@@ -92,8 +92,8 @@ define(["require", "exports", "../viewScene", "./person_collection"], function (
         };
         Scene.prototype.renderArena = function () {
             var scence = document.getElementById("scene"), block, posX = 0, posY = 0;
-            for (var j = 0; j < 5; j++) {
-                for (var i = 0; i < 9; i++) {
+            for (var j = 0; j < 6; j++) {
+                for (var i = 0; i < 11; i++) {
                     block = document.createElement("img");
                     block.addEventListener("mouseout", this.onOutBlock);
                     block.addEventListener("mouseover", this.onBlock);
